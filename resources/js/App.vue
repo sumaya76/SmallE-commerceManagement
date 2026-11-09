@@ -19,11 +19,17 @@ async function handleLogout() {
                 <router-link to="/">Home</router-link>
 
                 <template v-if="auth.user?.role === 'admin'">
-                    <router-link to="/admin">Admin Dashboard</router-link>
+                    <router-link to="/admin">Dashboard</router-link>
+                    <router-link to="/admin/shops">Shops</router-link>
+                    <router-link to="/admin/products">Products</router-link>
+                    <router-link to="/admin/shop-owners">Shop Owners</router-link>
                 </template>
 
                 <template v-if="auth.user?.role === 'shop_owner'">
-                    <router-link to="/owner">My Dashboard</router-link>
+                    <router-link to="/owner">Dashboard</router-link>
+                    <router-link to="/owner/catalog">Catalog</router-link>
+                    <router-link to="/owner/products">My Products</router-link>
+                    <router-link to="/owner/create">Create Product</router-link>
                 </template>
             </div>
 

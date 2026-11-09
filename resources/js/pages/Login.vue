@@ -56,8 +56,8 @@ async function submit() {
             </button>
 
             <p class="muted" style="font-size: 13px">
-                Demo: admin@example.com / password<br />
-                owner1@example.com / password
+                Demo: admin@gmail.com / password<br />
+                owner1@gmail.com / password
             </p>
         </div>
     </div>

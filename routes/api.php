@@ -6,11 +6,16 @@ use App\Http\Controllers\Api\Admin\ShopOwnerController as AdminShopOwnerControll
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Owner\CatalogController as OwnerCatalogController;
 use App\Http\Controllers\Api\Owner\ListingController as OwnerListingController;
+use App\Http\Controllers\Api\Public\ProductController as PublicProductController;
+use App\Http\Controllers\Api\Public\ShopController as PublicShopController;
 use Illuminate\Support\Facades\Route;
 
-// ---------- Public ----------
+// ---------- Public (customer, no login) ----------
 Route::post('/login', [AuthController::class, 'login']);
-// Phase 5: public customer routes ekhane ashbe
+
+Route::get('/shops', [PublicShopController::class, 'index']);
+Route::get('/shops/{slug}/products', [PublicShopController::class, 'products']);
+Route::get('/products', [PublicProductController::class, 'index']);
 
 // ---------- Authenticated ----------
 Route::middleware('auth:sanctum')->group(function () {

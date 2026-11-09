@@ -194,7 +194,7 @@ onMounted(() => load());
 
             <div class="form-group checkbox-row">
                 <input id="shop-active" v-model="form.is_active" type="checkbox" />
-                <label for="shop-active" style="margin: 0">Active (customer-ra dekhte pabe)</label>
+                <label for="shop-active" style="margin: 0">Active (visible to customers)</label>
             </div>
 
             <button class="btn" :disabled="saving" @click="save">

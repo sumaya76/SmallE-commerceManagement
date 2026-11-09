@@ -17,6 +17,7 @@ async function handleLogout() {
 
             <div class="nav-links">
                 <router-link to="/">Home</router-link>
+                                <router-link to="/products">Products</router-link>
 
                 <template v-if="auth.user?.role === 'admin'">
                     <router-link to="/admin">Dashboard</router-link>

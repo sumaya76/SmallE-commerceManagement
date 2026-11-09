@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Api\Admin\ShopController as AdminShopController;
+use App\Http\Controllers\Api\Admin\ShopOwnerController as AdminShopOwnerController;
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +17,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // ---------- Admin only ----------
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/ping', fn () => response()->json(['message' => 'Hello Admin']));
-        // Phase 3: shops, products, shop-owners ekhane ashbe
+
+        Route::apiResource('shops', AdminShopController::class);
+        Route::apiResource('products', AdminProductController::class);
+        Route::apiResource('shop-owners', AdminShopOwnerController::class);
     });
 
     // ---------- Shop owner only ----------

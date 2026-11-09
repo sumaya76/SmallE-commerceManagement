@@ -21,13 +21,40 @@ class ShopProduct extends Model
         'is_active' => 'boolean',
     ];
 
-    protected $appends = ['thumbnail_url'];
+    protected $appends = [
+        'thumbnail_url',
+        'display_name',
+        'display_description',
+        'display_thumbnail_url',
+    ];
 
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::get(
             fn () => $this->thumbnail ? asset('storage/' . $this->thumbnail) : null
         );
+    }
+
+    // Shop-specific value thakle seta, nahole catalog product-er value
+    protected function displayName(): Attribute
+    {
+        return Attribute::get(fn () => $this->name ?: $this->product?->name);
+    }
+
+    protected function displayDescription(): Attribute
+    {
+        return Attribute::get(fn () => $this->description ?: $this->product?->description);
+    }
+
+    protected function displayThumbnailUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            if ($this->thumbnail) {
+                return asset('storage/' . $this->thumbnail);
+            }
+
+            return $this->product?->thumbnail_url;
+        });
     }
 
     public function shop()

@@ -3,7 +3,7 @@ import { ref, reactive, onMounted } from 'vue';
 import api from '../../api';
 import Modal from '../../components/Modal.vue';
 import Pagination from '../../components/Pagination.vue';
-import { parseError } from '../../utils';
+import { formatTaka, parseError } from '../../utils';
 
 const listings = ref([]);
 const meta = ref({ current_page: 1, last_page: 1 });
@@ -145,7 +145,7 @@ onMounted(() => load());
                                 Catalog: {{ l.product?.name }}
                             </div>
                         </td>
-                        <td>{{ l.price }}</td>
+                        <td>{{ formatTaka(l.price) }}</td>
                         <td>
                             <span class="badge" :class="l.is_active ? 'badge-green' : 'badge-red'">
                                 {{ l.is_active ? 'Visible' : 'Hidden' }}
@@ -168,7 +168,7 @@ onMounted(() => load());
             <div v-if="formMessage" class="alert alert-error">{{ formMessage }}</div>
 
             <div class="form-group">
-                <label>Price *</label>
+                <label>Price (৳) *</label>
                 <input v-model="form.price" type="number" step="0.01" min="0" class="form-control" />
                 <div v-if="errors.price" class="error-text">{{ errors.price[0] }}</div>
             </div>

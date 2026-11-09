@@ -12,3 +12,10 @@ export function parseError(e) {
         message: e.response?.data?.message || 'Something went wrong. Please try again.',
     };
 }
+
+export function formatTaka(amount) {
+    return `৳ ${Number(amount).toLocaleString('en-BD', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    })}`;
+}

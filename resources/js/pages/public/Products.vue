@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import api from '../../api';
 import Pagination from '../../components/Pagination.vue';
-import { parseError } from '../../utils';
+import { formatTaka, parseError } from '../../utils';
 
 const products = ref([]);
 const meta = ref({ current_page: 1, last_page: 1 });
@@ -50,7 +50,7 @@ onMounted(() => load());
 
                 <h3>{{ p.name }}</h3>
                 <p class="desc">{{ p.description || 'No description' }}</p>
-                <div class="price">{{ p.price }}</div>
+                <div class="price">{{ formatTaka(p.price) }}</div>
                 <div style="font-size: 13px">
                     Sold by <router-link :to="`/shops/${p.shop.slug}`">{{ p.shop.name }}</router-link>
                 </div>

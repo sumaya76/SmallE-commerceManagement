@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '../../api';
-import { parseError } from '../../utils';
+import { formatTaka, parseError } from '../../utils';
 
 const router = useRouter();
 
@@ -66,7 +66,7 @@ async function save() {
             </div>
 
             <div class="form-group">
-                <label>Price *</label>
+                <label>Price (৳) *</label>
                 <input v-model="form.base_price" type="number" step="0.01" min="0" class="form-control" />
                 <div v-if="errors.base_price" class="error-text">{{ errors.base_price[0] }}</div>
             </div>

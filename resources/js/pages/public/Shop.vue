@@ -3,7 +3,7 @@ import { ref, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import api from '../../api';
 import Pagination from '../../components/Pagination.vue';
-import { parseError } from '../../utils';
+import { formatTaka, parseError } from '../../utils';
 
 const route = useRoute();
 
@@ -83,7 +83,7 @@ onMounted(() => load());
 
                     <h3>{{ p.name }}</h3>
                     <p class="desc">{{ p.description || 'No description' }}</p>
-                    <div class="price">{{ p.price }}</div>
+                    <div class="price">{{ formatTaka(p.price) }}</div>
                 </div>
             </div>
 

@@ -3,7 +3,7 @@ import { ref, reactive, onMounted } from 'vue';
 import api from '../../api';
 import Modal from '../../components/Modal.vue';
 import Pagination from '../../components/Pagination.vue';
-import { parseError } from '../../utils';
+import { formatTaka, parseError } from '../../utils';
 
 const products = ref([]);
 const meta = ref({ current_page: 1, last_page: 1 });
@@ -105,7 +105,7 @@ onMounted(() => load());
 
                 <h3>{{ p.name }}</h3>
                 <p class="desc">{{ p.description || 'No description' }}</p>
-                <div class="price">Base price: {{ p.base_price }}</div>
+                <div class="price">Base price: {{ formatTaka(p.base_price) }}</div>
                 <div class="muted" style="font-size: 12px">
                     By {{ p.creator ? p.creator.name : 'Unknown' }}
                 </div>
@@ -124,7 +124,7 @@ onMounted(() => load());
             <div v-if="errors.product_id" class="alert alert-error">{{ errors.product_id[0] }}</div>
 
             <div class="form-group">
-                <label>Your price *</label>
+                <label>Your price (৳) *</label>
                 <input v-model="form.price" type="number" step="0.01" min="0" class="form-control" />
                 <div v-if="errors.price" class="error-text">{{ errors.price[0] }}</div>
             </div>

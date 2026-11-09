@@ -3,7 +3,7 @@ import { ref, reactive, onMounted } from 'vue';
 import api from '../../api';
 import Modal from '../../components/Modal.vue';
 import Pagination from '../../components/Pagination.vue';
-import { parseError } from '../../utils';
+import { formatTaka, parseError } from '../../utils';
 
 const products = ref([]);
 const meta = ref({ current_page: 1, last_page: 1 });
@@ -141,7 +141,7 @@ onMounted(() => load());
                     <tr>
                         <th>Image</th>
                         <th>Name</th>
-                        <th>Base price</th>
+                        <th>Base price (৳)</th>
                         <th>Created by</th>
                         <th>In shops</th>
                         <th>Actions</th>
@@ -160,7 +160,7 @@ onMounted(() => load());
                             <div v-else class="thumb"></div>
                         </td>
                         <td>{{ p.name }}</td>
-                        <td>{{ p.base_price }}</td>
+                        <td>{{ formatTaka(p.base_price) }}</td>
                         <td>
                             {{ p.creator ? p.creator.name : '—' }}
                             <span v-if="p.creator" class="badge">{{ p.creator.role }}</span>
@@ -199,7 +199,7 @@ onMounted(() => load());
             </div>
 
             <div class="form-group">
-                <label>Base price *</label>
+                <label>Base price (৳) *</label>
                 <input v-model="form.base_price" type="number" step="0.01" min="0" class="form-control" />
                 <div v-if="errors.base_price" class="error-text">{{ errors.base_price[0] }}</div>
             </div>

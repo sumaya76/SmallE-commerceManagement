@@ -310,6 +310,22 @@ Rebuild frontend assets after changing Vue or CSS:
 npm run build
 ```
 
+## Project author
+
+**Sumaya Akter**
+
+Full-Stack Software Engineer
+
+- **Portfolio:** [sumayaportfolio.lovable.app](https://sumayaportfolio.lovable.app/)
+- **GitHub:** [github.com/sumaya76](https://github.com/sumaya76)
+- **LinkedIn:** [linkedin.com/in/sumaya-1920921a5](https://www.linkedin.com/in/sumaya-1920921a5/)
+- **Phone:** 01690253986
+- **Email:** [sumaya0akter45@gmail.com](mailto:sumaya0akter45@gmail.com)
+
+---
+
+*Designed and developed with a focus on scalable architecture, secure APIs, and seamless user experiences.*
+
 ## Troubleshooting
 
 - **`could not find driver`**: enable `pdo_sqlite` for SQLite or `pdo_mysql` for MySQL in the PHP configuration used by the command line; restart the terminal after changing `php.ini`.

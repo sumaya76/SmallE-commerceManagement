@@ -3,13 +3,14 @@ import { ref, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import api from '../../api';
 import Pagination from '../../components/Pagination.vue';
-import { formatTaka, parseError } from '../../utils';
+import { formatTaka, paginationMeta, parseError } from '../../utils';
 
 const route = useRoute();
 
 const shop = ref(null);
 const products = ref([]);
-const meta = ref({ current_page: 1, last_page: 1 });
+const meta = ref({ current_page: 1, last_page: 1, from: null, to: null, total: 0, per_page: 10 });
+const perPage = ref(10);
 const search = ref('');
 const loading = ref(false);
 const notFound = ref(false);
@@ -21,14 +22,11 @@ async function load(page = 1) {
     notFound.value = false;
     try {
         const { data } = await api.get(`/shops/${route.params.slug}/products`, {
-            params: { page, search: search.value },
+            params: { page, per_page: perPage.value, search: search.value },
         });
         shop.value = data.shop;
         products.value = data.products.data;
-        meta.value = {
-            current_page: data.products.current_page,
-            last_page: data.products.last_page,
-        };
+        meta.value = paginationMeta(data.products);
     } catch (e) {
         if (e.response?.status === 404) {
             notFound.value = true;
@@ -38,6 +36,11 @@ async function load(page = 1) {
     } finally {
         loading.value = false;
     }
+}
+
+function changePerPage(size) {
+    perPage.value = size;
+    load(1);
 }
 
 // Ek shop theke onno shop-e gele abar load
@@ -87,7 +90,7 @@ onMounted(() => load());
                 </div>
             </div>
 
-            <Pagination :meta="meta" @change="load" />
+            <Pagination :meta="meta" :loading="loading" @change="load" @per-page-change="changePerPage" />
         </template>
     </div>
 </template>

@@ -3,10 +3,11 @@ import { ref, reactive, onMounted } from 'vue';
 import api from '../../api';
 import Modal from '../../components/Modal.vue';
 import Pagination from '../../components/Pagination.vue';
-import { formatTaka, parseError } from '../../utils';
+import { formatTaka, paginationMeta, parseError } from '../../utils';
 
 const listings = ref([]);
-const meta = ref({ current_page: 1, last_page: 1 });
+const meta = ref({ current_page: 1, last_page: 1, from: null, to: null, total: 0, per_page: 10 });
+const perPage = ref(10);
 const search = ref('');
 const loading = ref(false);
 const success = ref('');
@@ -25,14 +26,19 @@ async function load(page = 1) {
     loading.value = true;
     error.value = '';
     try {
-        const { data } = await api.get('/owner/listings', { params: { page, search: search.value } });
+        const { data } = await api.get('/owner/listings', { params: { page, per_page: perPage.value, search: search.value } });
         listings.value = data.data;
-        meta.value = { current_page: data.current_page, last_page: data.last_page };
+        meta.value = paginationMeta(data);
     } catch (e) {
         error.value = parseError(e).message;
     } finally {
         loading.value = false;
     }
+}
+
+function changePerPage(size) {
+    perPage.value = size;
+    load(1);
 }
 
 function openEdit(l) {
@@ -162,7 +168,7 @@ onMounted(() => load());
             </table>
         </div>
 
-        <Pagination :meta="meta" @change="load" />
+        <Pagination :meta="meta" :loading="loading" @change="load" @per-page-change="changePerPage" />
 
         <Modal v-if="showForm" :title="`Edit: ${editing.display_name}`" @close="showForm = false">
             <div v-if="formMessage" class="alert alert-error">{{ formMessage }}</div>
@@ -174,13 +180,13 @@ onMounted(() => load());
             </div>
 
             <div class="form-group">
-                <label>Custom name (khali rakhle catalog-er name)</label>
+                <label>Custom name (leave blank to use the catalog name)</label>
                 <input v-model="form.name" class="form-control" :placeholder="editing.product?.name" />
                 <div v-if="errors.name" class="error-text">{{ errors.name[0] }}</div>
             </div>
 
             <div class="form-group">
-                <label>Custom description (khali rakhle catalog-er description)</label>
+                <label>Custom description (leave blank to use the catalog description)</label>
                 <textarea v-model="form.description" class="form-control" rows="3"
                           :placeholder="editing.product?.description || ''"></textarea>
                 <div v-if="errors.description" class="error-text">{{ errors.description[0] }}</div>
@@ -195,7 +201,7 @@ onMounted(() => load());
                 <div v-if="errors.thumbnail" class="error-text">{{ errors.thumbnail[0] }}</div>
                 <div v-if="currentThumb" class="checkbox-row" style="margin-top: 8px">
                     <input id="rm-l-thumb" v-model="form.remove_thumbnail" type="checkbox" />
-                    <label for="rm-l-thumb" style="margin: 0">Remove my thumbnail (catalog-er ta use hobe)</label>
+                    <label for="rm-l-thumb" style="margin: 0">Remove my thumbnail and use the catalog image</label>
                 </div>
             </div>
 

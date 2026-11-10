@@ -19,3 +19,14 @@ export function formatTaka(amount) {
         maximumFractionDigits: 2,
     })}`;
 }
+
+export function paginationMeta(response) {
+    return {
+        current_page: response.current_page,
+        last_page: response.last_page,
+        from: response.from,
+        to: response.to,
+        total: response.total,
+        per_page: response.per_page,
+    };
+}

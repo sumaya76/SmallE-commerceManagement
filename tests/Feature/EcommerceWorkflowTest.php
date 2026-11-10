@@ -117,6 +117,30 @@ class EcommerceWorkflowTest extends TestCase
         $this->assertSame(10.0, (float) $listing->fresh()->price);
     }
 
+    public function test_paginated_shop_products_return_the_requested_page_and_range(): void
+    {
+        [, , , $shop] = $this->createAccountsAndShops();
+
+        for ($index = 1; $index <= 13; $index++) {
+            $product = $this->createProduct('Pagination Product '.$index);
+            ShopProduct::create([
+                'shop_id' => $shop->id,
+                'product_id' => $product->id,
+                'price' => $index,
+            ]);
+        }
+
+        $this->getJson('/api/shops/'.$shop->slug.'/products?page=2&per_page=5')
+            ->assertOk()
+            ->assertJsonPath('products.current_page', 2)
+            ->assertJsonPath('products.last_page', 3)
+            ->assertJsonPath('products.from', 6)
+            ->assertJsonPath('products.to', 10)
+            ->assertJsonPath('products.total', 13)
+            ->assertJsonFragment(['name' => 'Pagination Product 6'])
+            ->assertJsonMissing(['name' => 'Pagination Product 1']);
+    }
+
     private function createAccountsAndShops(): array
     {
         $admin = User::create([

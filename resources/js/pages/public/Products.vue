@@ -2,10 +2,11 @@
 import { ref, onMounted } from 'vue';
 import api from '../../api';
 import Pagination from '../../components/Pagination.vue';
-import { formatTaka, parseError } from '../../utils';
+import { formatTaka, paginationMeta, parseError } from '../../utils';
 
 const products = ref([]);
-const meta = ref({ current_page: 1, last_page: 1 });
+const meta = ref({ current_page: 1, last_page: 1, from: null, to: null, total: 0, per_page: 10 });
+const perPage = ref(10);
 const search = ref('');
 const loading = ref(false);
 const error = ref('');
@@ -14,14 +15,19 @@ async function load(page = 1) {
     loading.value = true;
     error.value = '';
     try {
-        const { data } = await api.get('/products', { params: { page, search: search.value } });
+        const { data } = await api.get('/products', { params: { page, per_page: perPage.value, search: search.value } });
         products.value = data.data;
-        meta.value = { current_page: data.current_page, last_page: data.last_page };
+        meta.value = paginationMeta(data);
     } catch (e) {
         error.value = parseError(e).message;
     } finally {
         loading.value = false;
     }
+}
+
+function changePerPage(size) {
+    perPage.value = size;
+    load(1);
 }
 
 onMounted(() => load());
@@ -57,6 +63,6 @@ onMounted(() => load());
             </div>
         </div>
 
-        <Pagination :meta="meta" @change="load" />
+        <Pagination :meta="meta" :loading="loading" @change="load" @per-page-change="changePerPage" />
     </div>
 </template>

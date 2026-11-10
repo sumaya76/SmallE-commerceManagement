@@ -3,10 +3,11 @@ import { ref, reactive, onMounted } from 'vue';
 import api from '../../api';
 import Modal from '../../components/Modal.vue';
 import Pagination from '../../components/Pagination.vue';
-import { parseError } from '../../utils';
+import { paginationMeta, parseError } from '../../utils';
 
 const shops = ref([]);
-const meta = ref({ current_page: 1, last_page: 1 });
+const meta = ref({ current_page: 1, last_page: 1, from: null, to: null, total: 0, per_page: 10 });
+const perPage = ref(10);
 const owners = ref([]);
 const search = ref('');
 const loading = ref(false);
@@ -24,14 +25,19 @@ async function load(page = 1) {
     loading.value = true;
     error.value = '';
     try {
-        const { data } = await api.get('/admin/shops', { params: { page, search: search.value } });
+        const { data } = await api.get('/admin/shops', { params: { page, per_page: perPage.value, search: search.value } });
         shops.value = data.data;
-        meta.value = { current_page: data.current_page, last_page: data.last_page };
+        meta.value = paginationMeta(data);
     } catch (e) {
         error.value = parseError(e).message;
     } finally {
         loading.value = false;
     }
+}
+
+function changePerPage(size) {
+    perPage.value = size;
+    load(1);
 }
 
 async function loadOwners() {
@@ -164,7 +170,7 @@ onMounted(() => load());
             </table>
         </div>
 
-        <Pagination :meta="meta" @change="load" />
+        <Pagination :meta="meta" :loading="loading" @change="load" @per-page-change="changePerPage" />
 
         <Modal v-if="showForm" :title="editingId ? 'Edit Shop' : 'New Shop'" @close="showForm = false">
             <div v-if="formMessage" class="alert alert-error">{{ formMessage }}</div>

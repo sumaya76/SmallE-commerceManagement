@@ -180,6 +180,13 @@ All seeded demo accounts use the password `password`.
 
 The screenshots below are real browser captures of the running application. They use local demo data; names, products, and counts may differ after you seed or edit your database. The create/edit dialogs are shown for documentation only; no records were created or changed to capture them. Shop-owner names and email addresses in screenshots are blurred.
 
+### Product image and deletion behavior
+
+- Catalog product thumbnails are shared defaults; a shop listing can have its own thumbnail override. When a listing has no override, it uses the catalog thumbnail.
+- Thumbnail uploads accept JPG, JPEG, PNG, or WebP images up to 2 MB. Replacing or removing a thumbnail deletes its previous file.
+- Removing a listing deletes its listing-specific thumbnail but leaves the shared catalog product intact.
+- Deleting a catalog product also removes its shop listings. Their listing-specific thumbnails are deleted unless another product or listing still references the same file.
+
 ### Customer experience
 
 - Browse active shops and search the shop directory.

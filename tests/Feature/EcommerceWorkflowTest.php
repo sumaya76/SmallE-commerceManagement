@@ -7,6 +7,7 @@ use App\Models\Shop;
 use App\Models\ShopProduct;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class EcommerceWorkflowTest extends TestCase
@@ -115,6 +116,30 @@ class EcommerceWorkflowTest extends TestCase
             ->assertForbidden();
 
         $this->assertSame(10.0, (float) $listing->fresh()->price);
+    }
+
+    public function test_deleting_a_catalog_product_removes_its_listing_thumbnails(): void
+    {
+        Storage::fake('public');
+
+        [$admin, , , $shop] = $this->createAccountsAndShops();
+        $product = $this->createProduct('Product with listing thumbnail');
+        $thumbnail = 'thumbnails/listing-image.jpg';
+        Storage::disk('public')->put($thumbnail, 'test image');
+
+        $listing = ShopProduct::create([
+            'shop_id' => $shop->id,
+            'product_id' => $product->id,
+            'price' => 15,
+            'thumbnail' => $thumbnail,
+        ]);
+
+        $this->actingAs($admin, 'sanctum')
+            ->deleteJson('/api/admin/products/'.$product->id)
+            ->assertOk();
+
+        $this->assertDatabaseMissing('shop_products', ['id' => $listing->id]);
+        Storage::disk('public')->assertMissing($thumbnail);
     }
 
     public function test_paginated_shop_products_return_the_requested_page_and_range(): void

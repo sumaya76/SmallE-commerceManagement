@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ShopProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,8 +79,21 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        $listingThumbnails = ShopProduct::where('product_id', $product->id)
+            ->whereNotNull('thumbnail')
+            ->pluck('thumbnail');
+
         $this->deleteFile($product->thumbnail);
         $product->delete();
+
+        foreach ($listingThumbnails as $thumbnail) {
+            $stillInUse = ShopProduct::where('thumbnail', $thumbnail)->exists()
+                || Product::where('thumbnail', $thumbnail)->exists();
+
+            if (!$stillInUse) {
+                $this->deleteFile($thumbnail);
+            }
+        }
 
         return response()->json(['message' => 'Product deleted successfully.']);
     }
